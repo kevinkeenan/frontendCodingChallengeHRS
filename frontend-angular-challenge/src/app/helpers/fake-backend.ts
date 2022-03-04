@@ -69,23 +69,34 @@ export class FakeBackendInterceptor implements HttpInterceptor {
          * passes in a User object with a unique userName
          * User must be logged in in order to edit their own username
          * User can only edit their own username
-         * subtract one from arrayIndex to get the 0th index
+         * ineffiecient lookup of user
          * @returns ok status message
          */
         function edit()
         {
+
             if (!isLoggedIn()) return unauthorized();
+
+                        console.log("inside Edit user");
 
             const user = body;
 
             if (users.find(x => x.username === user.username)) {
                 return error('Username "' + user.username + '" is already taken')
             }
+            console.log(user.id);
+            console.log(user.id);
+
             //overwrite existing user with a given ID with new User object in body of put request
-            console.log("existing user" + users[user.id-1].value);
-            console.log("new user" + user.value);
-            users[user.id-1] = user;
-            console.log("updated user " + users[user.id-1].value);
+            for(var i = 0; i < users.length; i++)
+            {
+                if(users[i].id == user.id)
+                {
+                    console.log("existing userName" + users[i].value);
+                    users[i] = user;
+                    console.log("new userName" + users[i].value);
+                }
+            }
             localStorage.setItem('users', JSON.stringify(users));
 
             return ok();
